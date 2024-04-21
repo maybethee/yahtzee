@@ -1,5 +1,4 @@
 class Cup
-  DIE_FACE_TO_NUM_CONVERSION = { '⚀': 1, '⚁': 2, '⚂': 3, '⚃': 4, '⚄': 5, '⚅': 6 }.freeze
 
   attr_accessor :dice, :previous_roll, :locked_dice
 
@@ -25,8 +24,8 @@ class Cup
 
   def show_current_roll
     puts "current roll:"
-    @dice.each do |die|
-      puts "#{die.current_roll} | #{die.state}"
+    @dice.each_with_index do |die, index|
+      puts "#{index + 1}. #{die.current_roll} | #{die.state}"
     end
     puts
   end

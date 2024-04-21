@@ -1,6 +1,7 @@
 require_relative 'player'
 require_relative 'die'
 require_relative 'cup'
+require_relative 'scorecard'
 
 class Game
   def initialize
@@ -13,18 +14,31 @@ class Game
   end
 
   def player_turn
-    dice_cup = Cup.new
-    puts "choose which dice to lock/unlock"
-    locked_dice = lock_decision
+    13.times do
+      dice_cup = Cup.new
+      roll_loop(dice_cup)
+      @current_player.turn_score(dice_cup.dice)
+      next_player
+    end
+    # @players.each { |player| player.scoreboard.calculate_total }
+    # call_winner
+  end
 
-    dice_cup.change_chosen_dice_state(locked_dice)
+  def roll_loop(cup)
+    cup.roll
+    2.times do
+      puts "choose which dice to lock/unlock"
+      locked_dice = lock_decision
 
-    dice_cup.roll
+      cup.change_chosen_dice_state(locked_dice)
+
+      cup.roll
+    end
   end
 
   def lock_decision
     loop do
-      error_message = "Invalid input.\n\nformat input using only numbers with a single space between\nno commas or other punctuation!"
+      error_message = "Invalid input.\n\nformat input using only numbers with a single space between"
       dice_choice = gets.chomp.strip
 
       # turn string into array of numbers
@@ -36,6 +50,7 @@ class Game
   end
 
   def valid?(dice_choice_arr)
+    # need to include edge cases like player locking all dice on first decision / allowing player to break roll loop after first roll when favorable
     is_valid = dice_choice_arr.all? { |num| num.between?(1, 5) }
 
     is_unique = dice_choice_arr.uniq.length == dice_choice_arr.length
