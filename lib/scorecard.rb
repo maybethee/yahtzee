@@ -32,9 +32,9 @@ class Scorecard
     puts "which category to apply score to? (can only score once per category)"
 
     # category choice will be the chosen category as code (a2, b5, etc.)
-    category_choice = category_decision
+    category_code = category_decision
 
-    # apply_score_to_category(category_code, dice)
+    apply_score_to_category(category_code, dice)
   end
 
   def category_decision
@@ -72,5 +72,32 @@ class Scorecard
     else
       @lower_section[@lower_section.keys[(choice[1].to_i - 1)]].nil?
     end
+  end
+
+  def apply_score_to_category(category_code, dice)
+    dice_arr_numbers = convert_dice_to_numbers(dice)
+
+    if category_code[0] == 'a'
+      # perform method that adds code to equivalent upper category code?
+      apply_score_upper_category(category_code, dice_arr_numbers)
+    else
+      puts "under construction, come back later..."
+    end
+    display_categories
+  end
+
+  def convert_dice_to_numbers(dice_array)
+    roll_as_numbers = []
+    dice_array.each do |die|
+      roll_as_numbers << DIE_FACE_TO_NUM_CONVERSION.fetch(die.current_roll.to_sym)
+    end
+    roll_as_numbers
+  end
+
+  def apply_score_upper_category(category_code, dice_array)
+    upper_section_category = category_code[1].to_i
+    # perform method that adds code to equivalent upper category code?
+    score = dice_array.select { |die| die == upper_section_category }
+    @upper_section[@upper_section.keys[(upper_section_category - 1)]] = score.sum
   end
 end
