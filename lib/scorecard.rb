@@ -1,7 +1,7 @@
 class Scorecard
   DIE_FACE_TO_NUM_CONVERSION = { '⚀': 1, '⚁': 2, '⚂': 3, '⚃': 4, '⚄': 5, '⚅': 6 }.freeze
 
-  attr_accessor :upper_section, :lower_section
+  attr_accessor :upper_section, :lower_section, :total_score
 
   def initialize
     @upper_section = {
@@ -31,6 +31,8 @@ class Scorecard
       6 => :yahtzee,
       7 => :chance
     }
+
+    @total_score = nil
   end
 
   def add_score(dice)
@@ -39,12 +41,23 @@ class Scorecard
 
     display_categories
 
-    puts "which category to apply score to? (can only score once per category)"
+    puts "\nwhich category to apply score to? (can only score once per category)"
 
     # category choice will be the chosen category as code (a2, b5, etc.)
     category_code = category_decision
 
     apply_score_to_category(category_code, dice)
+  end
+
+  # method will be called for each player
+  def calculate_total
+    # add bonus for upper section
+    @upper_section[:upper_bonus] = 35 if @upper_section.values.sum >= 63
+
+    # mainly to show whether a player received the above bonus, but also to show all scorecards back to back before final totals
+    display_categories
+
+    @total_score = @upper_section.values.sum + @lower_section.values.sum
   end
 
   def category_decision
@@ -59,7 +72,7 @@ class Scorecard
   end
 
   def display_categories
-    puts 'A. Upper Section:'
+    puts "\n\nA. Upper Section:"
     @upper_section.each_with_index do |(upper_category, score), index|
       puts "  #{index + 1}. #{upper_category}: #{score}"
     end

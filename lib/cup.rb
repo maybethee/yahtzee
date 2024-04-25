@@ -1,6 +1,6 @@
 class Cup
 
-  attr_accessor :dice, :previous_roll, :locked_dice
+  attr_accessor :dice
 
   def initialize
     @dice = Array.new(5) { Die.new }
@@ -23,7 +23,7 @@ class Cup
   end
 
   def show_current_roll
-    puts "current roll:"
+    puts "\n\ncurrent roll:"
     @dice.each_with_index do |die, index|
       puts "#{index + 1}. #{die.current_roll} | #{die.state}"
     end
