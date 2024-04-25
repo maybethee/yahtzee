@@ -134,6 +134,52 @@ class Scorecard
     @lower_section[:four_of_a_kind] = four_of_a_kind_score
   end
 
+  def full_house(dice)
+    full_house_groups = dice.group_by { |die| die }
+    pair_group = full_house_groups.any? { |k, v| v.size == 2 }
+    trio_group = full_house_groups.any? { |k, v| v.size == 3 }
+
+    @lower_section[:full_house] = if pair_group && trio_group
+                                    25
+                                  else
+                                    0
+                                  end
+  end
+
+  def small_straight(dice)
+    # sort because position in array doesn't matter
+    sorted_dice = dice.uniq.sort
+    # check if each die in next position is equal to that die + 1
+    check_small_straight = (0..sorted_dice.size - 4).any? do |die|
+      sorted_dice[die] + 1 == sorted_dice[die + 1] &&
+      sorted_dice[die] + 2 == sorted_dice[die + 2] &&
+      sorted_dice[die] + 3 == sorted_dice[die + 3]
+    end
+
+    @lower_section[:small_straight] = if check_small_straight
+                                        30
+                                      else
+                                        0
+                                      end
+  end
+
+  def large_straight(dice)
+    sorted_dice = dice.uniq.sort
+    check_large_straight = (0..sorted_dice.size - 5).any? do |die|
+      sorted_dice[die] + 1 == sorted_dice[die + 1] &&
+      sorted_dice[die] + 2 == sorted_dice[die + 2] &&
+      sorted_dice[die] + 3 == sorted_dice[die + 3] &&
+      sorted_dice[die] + 4 == sorted_dice[die + 4]
+    end
+
+    @lower_section[:large_straight] = if check_large_straight
+                                        40
+                                      else
+                                        0
+                                      end
+  end
+
+
   def yahtzee(dice)
     yahtzee = dice.group_by { |die| die }.find { |k, v| v.size >= 5 }
 

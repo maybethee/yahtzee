@@ -60,5 +60,6 @@ class Game
 
   def next_player
     @current_player = @players.rotate!.first
+    puts "#{@current_player}'s turn!"
   end
 end
